@@ -1,0 +1,348 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Movies — Sam-movie</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #0f1115;
+      color: #e6e6e6;
+      padding-top: 80px;
+      /* Navbar balandligiga qarab 70–100px */
+    }
+
+    .navbar {
+      background: #1a1d24;
+    }
+
+    .brand {
+      font-weight: 800;
+      letter-spacing: .5px;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .card {
+      background: #1a1d24;
+      border: 1px solid #262a33;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    }
+
+    .poster {
+      aspect-ratio: 2/3;
+      object-fit: cover;
+      width: 100%;
+      border-radius: .5rem;
+    }
+
+    .meta {
+      color: #9aa0a6;
+      font-size: .9rem;
+    }
+
+    .badge-genre {
+      background: #232733;
+      border: 1px solid #2f3542;
+    }
+
+    .truncate-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .footer {
+      color: #9aa0a6;
+    }
+
+    @media (max-width: 768px) {
+      main>.d-flex.align-items-center.justify-content-between {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 50px;
+        gap: 5px;
+      }
+
+      main>.d-flex.align-items-center.justify-content-between h1,
+      main>.d-flex.align-items-center.justify-content-between .meta {
+        margin-bottom: 0;
+      }
+
+      .navbar .container {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+        gap: 10px;
+        align-items: center;
+        position: relative;
+      }
+
+      .navbar-toggler {
+        grid-column: 1 / -1;
+        grid-row: 1;
+        justify-self: flex-start;
+      }
+
+      .navbar-brand {
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .searchbar {
+        grid-column: 2;
+        grid-row: 2;
+        width: 100%;
+        font-size: 14px;
+        padding: 6px 10px;
+      }
+
+      .navbar-collapse {
+        grid-column: 1 / -1;
+        margin-top: 10px;
+      }
+
+      .navbar-nav {
+        position: absolute;
+        left: 50%;
+        top: 100%;
+        transform: translateX(-50%);
+        margin-left: 0 !important;
+        margin-top: 10px;
+      }
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .social-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #1a1d24;
+      border: 1px solid #2a2f3a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .15s ease, background .15s ease;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+    }
+
+    .social-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #1a1d24;
+      border: 1px solid #2f3542;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .2s ease, background .2s ease;
+    }
+
+    .social-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: #9aa0a6;
+      transition: fill .2s ease;
+    }
+
+    .social-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+    }
+
+    .social-btn.instagram:hover {
+      background: #e1306c;
+    }
+
+    .social-btn.youtube:hover {
+      background: #ff0000;
+    }
+
+    .social-btn.telegram:hover {
+      background: #2aabee;
+    }
+
+    .social-btn.github:hover {
+      background: #24292f;
+    }
+
+
+    .social-btn:hover svg {
+      fill: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark py-3 fixed-top">
+    <div class="container d-flex align-items-center">
+      <!-- BRAND -->
+      <a class="navbar-brand brand ms-4" href="#"><span class="text-warning">Sam</span>-movie</a>
+
+      {% if user.is_authenticated %}
+      <!-- Hamburger toggler -->
+      <button class="btn text-light ms-auto" type="button" data-bs-toggle="offcanvas" data-bs-target="#secondNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Categories -->
+      <ul class="navbar-nav" style="margin-left: 80px;">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Category
+          </a>
+          <ul class="dropdown-menu bg-dark border-0 p-2" style="max-height: 300px; overflow-y: auto; width: 220px;">
+            {% for cat in categories %}
+            <li>
+              <a class="dropdown-item text-light" style="white-space: normal;" href="{% url 'film-category' cat.id %}">
+                {{ cat.name }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Search -->
+      <form class="ms-auto d-flex" role="search" method="get">
+        <input class="form-control me-2 searchbar" type="search" placeholder="Searching" name="search"
+          value="{{ request.GET.search }}">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+
+      {% else %}
+      <a href="{% url 'login' %}" class="text-light me-2">Login</a>
+      <a href="{% url 'register' %}" class="text-light ms-2">Register</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- Offcanvas Sidebar -->
+  <div class="offcanvas offcanvas-end bg-dark text-light" tabindex="-1" id="secondNav">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">Menu</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+      {% if user.is_authenticated %}
+      <a href="{% url 'film_add' %}" class="btn btn-warning w-100 mb-3">Add new movie</a>
+      <a href="{% url 'logout' %}" class="btn btn-danger w-100 mb-3">Exit</a>
+      <a href="{% url 'my_profile' %}" class="btn btn-primary w-100 mb-3">My profile</a>
+
+      {% else %}
+      <a href="{% url 'login' %}" class="btn btn-success w-100 mb-3">Login</a>
+      <a href="{% url 'register' %}" class="btn btn-primary w-100 mb-3">Register</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <main class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h1 class="h3 m-0">Movies</h1>
+      <div class="meta">Total: {{ films|length }}</div>
+    </div>
+
+    {% if films %}
+    <div class="row g-4">
+      {% for film in films %}
+      <div class="col-6 col-md-4 col-lg-3">
+        <div class="card h-100 p-2">
+          <a href="{% url 'film-detail' film.id %}" class="d-block">
+            {% if film.image %}
+            <img src="{{ film.image.url }}" alt="{{ film.name }}" class="poster">
+            {% else %}
+            <img src="https://via.placeholder.com/400x600?text=No+Poster" class="poster" alt="No poster">
+            {% endif %}
+          </a>
+          <div class="card-body p-2">
+            <a href="{% url 'film-detail' film.id %}" class="stretched-link text-light">
+              <h2 class="h6 mb-1">{{ film.name }}</h2>
+            </a>
+            <div class="meta">
+              {{ film.created_at|date:"Y" }} • {{ film.duration }}
+            </div>
+            {% if film.direct_by %}
+            <div class="meta">Director {{ film.direct_by }}</div>
+            {% endif %}
+            {% if film.created_by %}
+            <div class="mt-2">
+              <small class="text-secondary">Added by {{ film.created_by.username }}</small>
+            </div>
+            {% endif %}
+            {% if film.description %}
+            <p class="mt-2 truncate-2 text-secondary">{{ film.description|truncatewords:20 }}</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5 text-secondary">No movie yet</div>
+    {% endif %}
+  </main>
+
+  <footer class="footer py-4">
+    <div class="container text-center">
+      <div class="social-icons mb-3">
+        <!-- Instagram -->
+        <a href="https://instagram.com/_samcodes_" target="_blank" class="social-btn instagram" aria-label="Instagram">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 5.8A4.2 4.2 0 1 0 16.2 12 4.2 4.2 0 0 0 12 7.8zm0 6.9A2.7 2.7 0 1 1 14.7 12 2.7 2.7 0 0 1 12 14.7zM17.5 6.5a1 1 0 1 0 1 1 1 1 0 0 0-1-1z" />
+          </svg>
+        </a>
+
+        <!-- YouTube -->
+        <a href="https://youtube.com/@SamCodes-001" target="_blank" class="social-btn youtube" aria-label="YouTube">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M23 7.5a4 4 0 0 0-2.8-2.8C17.9 4 12 4 12 4s-5.9 0-8.2.7A4 4 0 0 0 1 7.5 41 41 0 0 0 1 12a41 41 0 0 0 .8 4.5 4 4 0 0 0 2.8 2.8C6.1 20 12 20 12 20s5.9 0 8.2-.7a4 4 0 0 0 2.8-2.8A41 41 0 0 0 23 12a41 41 0 0 0-.8-4.5zM10 15.3V8.7L15.5 12z" />
+          </svg>
+        </a>
+
+        <!-- Telegram -->
+        <a href="https://t.me/samcodespy" target="_blank" class="social-btn telegram" aria-label="Telegram">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M21.9 4.6 2.8 11.9c-1.3.5-1.3 1.2-.2 1.5l4.9 1.5 1.9 5.7c.2.6.4.8.8.8.3 0 .6-.2.9-.5l2.7-2.6 5.6 4.1c1 .6 1.7.3 2-.9l3.4-15.9c.4-1.5-.6-2.2-1.9-1.6z" />
+          </svg>
+        </a>
+
+        <!-- GitHub -->
+        <a href="https://github.com/samandarramonaliyev" target="_blank" class="social-btn github" aria-label="GitHub">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 2C6.5 2 2 6.6 2 12.3c0 4.5 2.9 8.3 6.9 9.6.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.4-3.4-1.4-.4-1.1-1-1.4-1-1.4-.9-.6.1-.6.1-.6 1 .1 1.6 1.1 1.6 1.1.9 1.6 2.4 1.1 3 .8.1-.7.4-1.1.7-1.4-2.2-.3-4.6-1.2-4.6-5.2 0-1.1.4-2.1 1.1-2.8-.1-.3-.5-1.4.1-2.9 0 0 .9-.3 3 .9a10 10 0 0 1 5.5 0c2.1-1.2 3-.9 3-.9.6 1.5.2 2.6.1 2.9.7.7 1.1 1.7 1.1 2.8 0 4-2.4 4.9-4.6 5.2.4.4.8 1 .8 2v3c0 .3.2.6.7.5 4-1.3 6.9-5.1 6.9-9.6C22 6.6 17.5 2 12 2z" />
+          </svg>
+        </a>
+
+      </div>
+      <div class="container small">© {{ now|date:"Y" }} Sam-movie directory.</div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

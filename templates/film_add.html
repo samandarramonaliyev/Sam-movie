@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Add Movies</title>
+
+  <style>
+    body {
+      background: #0f1115;
+      color: #e6e6e6;
+      padding-top: 70px;
+    }
+
+    .form-control,
+    .form-select {
+      background: #1a1d24 !important;
+      border: 1px solid #2c3038;
+      color: white !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label>Name a movie</label>
+        {{ form.name }}
+      </div>
+
+      <div class="mb-3">
+        <label>Description</label>
+        {{ form.description }}
+      </div>
+
+      <div class="d-flex gap-3 mb-3">
+        <div style="flex: 1;">
+          <label>Duration</label>
+          {{ form.duration }}
+        </div>
+
+        <div style="flex: 1;">
+          <label>Direct_by</label>
+          {{ form.direct_by }}
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label>Stars</label>
+        {{ form.actor }}
+      </div>
+
+      <div class="mb-3">
+        <label>Poster (image)</label>
+        {{ form.image }}
+      </div>
+
+      <div class="mb-3">
+        <label>Genres</label><br>
+        {{ form.genres }}
+      </div>
+
+
+      <button type="submit" class="btn btn-primary mt-3">Save</button>
+
+    </form>
+
+    <div class="alert alert-info mt-2">
+      After you add a movie, it must be approved by an admin. Unapproved movies will not appear on the page. Check your
+      profile after a few hours.
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
