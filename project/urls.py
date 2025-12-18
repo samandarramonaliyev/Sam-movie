@@ -9,9 +9,8 @@ from django.urls import path
 
 urlpatterns = [
     path('admin_bo`lib_kirish/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('', include('app.urls')),
-    path('', include('accounts.urls')),
+    path('accounts/', include('accounts.urls')),   # 👈 SHU YERGA KO‘CHIRDIK
+    path('', include('app.urls')),   
 
 ]
 
