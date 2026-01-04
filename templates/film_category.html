@@ -78,6 +78,35 @@
             width: 100%;
             border-radius: .5rem;
         }
+
+        /* 📱 TELEFONDA CATEGORY NAVNI SURIB TASHLAMASIN */
+        @media (max-width: 768px) {
+
+            .navbar {
+                position: relative;
+                z-index: 1000;
+            }
+
+            .navbar-nav {
+                position: static !important;
+                /* nav joyida qoladi */
+                transform: none !important;
+                margin: 0 auto !important;
+            }
+
+            .dropdown-menu {
+                position: absolute !important;
+                /* navdan tashqarida ochiladi */
+                top: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 220px;
+                max-height: 300px;
+                overflow-y: auto;
+                margin-top: 6px;
+                z-index: 1050;
+            }
+        }
     </style>
 </head>
 
