@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile_user.username }}'s Profile — Sam-movie</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #0f1115;
+            color: #e6e6e6;
+            padding-top: 70px;
+        }
+
+        .navbar {
+            background: #1a1d24;
+        }
+
+        .brand {
+            font-weight: 800;
+            letter-spacing: .5px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ffc107;
+        }
+
+        .card {
+            background: #1a1d24;
+            border: 1px solid #262a33;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+        }
+
+        .poster {
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            width: 100%;
+            border-radius: .5rem;
+        }
+
+        .truncate-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .meta {
+            color: #9aa0a6;
+            font-size: .9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-dark fixed-top py-3">
+        <div class="container d-flex align-items-center">
+            <a class="navbar-brand brand" href="{% url 'films' %}">
+                <span class="text-warning">Sam</span>-movie
+            </a>
+            <a href="javascript:history.back()" class="btn btn-outline-light btn-sm">← Back</a>
+        </div>
+    </nav>
+
+    <main class="container py-4">
+
+        <!-- PROFIL HEADER -->
+        <div class="profile-header">
+            {% if profile_user.profile.avatar %}
+                <img src="{{ profile_user.profile.avatar.url }}" class="profile-avatar" alt="Avatar">
+            {% else %}
+                <img src="https://via.placeholder.com/100?text=Avatar" class="profile-avatar" alt="Avatar">
+            {% endif %}
+            <div>
+                <h2>{{ profile_user.username }}</h2>
+                <p class="text-secondary">
+                    User added movies: {{ films|length }}
+                </p>
+            </div>
+        </div>
+
+        <!-- FILMLAR -->
+        {% if films %}
+        <div class="row g-4">
+            {% for film in films %}
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="card h-100 p-2">
+                    <a href="{% url 'film-detail' film.id %}">
+                        {% if film.image %}
+                            <img src="{{ film.image.url }}" class="poster" alt="{{ film.name }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/400x600?text=No+Poster" class="poster">
+                        {% endif %}
+                    </a>
+                    <div class="card-body p-2">
+                        <a href="{% url 'film-detail' film.id %}" class="stretched-link text-light">
+                            <h5 class="mb-1">{{ film.name }}</h5>
+                        </a>
+                        <div class="meta">
+                            {{ film.created_at|date:"Y" }} • {{ film.duration }}
+                        </div>
+                        {% if film.direct_by %}
+                            <div class="meta">Director: {{ film.direct_by }}</div>
+                        {% endif %}
+                        {% if film.description %}
+                            <p class="mt-2 truncate-2 text-secondary">
+                                {{ film.description|truncatewords:20 }}
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5 text-secondary">
+            This user has not added any movies yet.
+        </div>
+        {% endif %}
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

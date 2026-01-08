@@ -29,6 +29,9 @@ class Film(models.Model):
     )
 
     approved = models.BooleanField(default=False)
+    anonymous = models.BooleanField(default=False)
+
+
     def __str__(self):
         return f"{self.name}; {self.direct_by}; {self.duration}"
     
@@ -37,27 +40,14 @@ class Film(models.Model):
         super().save(*args, **kwargs)
 
         if self.image:
-            img = Image.open(self.image.path)
-
-            # Hamma rasmlarni bir xil razmerga o‘tkazamiz
-            target_size = (400, 600)  # 400x600 px
-
-            img = img.resize(target_size, Image.LANCZOS)
-            img.save(self.image.path)
-
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-        if self.image:
-            img = Image.open(self.image.path)
-
-            # Hamma rasmlarni bir xil razmerga o‘tkazamiz
-            target_size = (400, 600)  # 400x600 px
-
-            img = img.resize(target_size, Image.LANCZOS)
-            img.save(self.image.path)
-
+            try:
+                img = Image.open(self.image.path)
+                target_size = (400, 600)
+                img = img.resize(target_size, Image.LANCZOS)
+                img.save(self.image.path)
+            except Exception:
+                # serverda yoki developda media fayl yo'qligida xato chiqmasligi uchun pass
+                pass
 
 
 # class Category(models.Model):

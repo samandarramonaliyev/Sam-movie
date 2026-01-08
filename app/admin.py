@@ -4,16 +4,14 @@ from .models import Film, Janr
 @admin.register(Film)
 class FilmAdmin(admin.ModelAdmin):
     filter_horizontal = ("genres",)
-    list_display = ('name', 'created_by', 'approved', 'created_at')
+    list_display = ('name', 'created_by', 'approved', 'anonymous', 'created_at')
     list_filter = ('approved', 'created_at', 'genres')
     search_fields = ('name', 'description')
-
+    list_editable = ("approved", "anonymous")
 
     def save_model(self, request, obj, form, change):
         if not obj.created_by:
             obj.created_by = request.user
-        super().save_model(request, obj, form, change)  # 👈 MUHIM
-        
+        super().save_model(request, obj, form, change)
 
 admin.site.register(Janr)
-

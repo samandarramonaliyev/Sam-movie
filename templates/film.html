@@ -288,11 +288,21 @@
             {% if film.direct_by %}
             <div class="meta">Director {{ film.direct_by }}</div>
             {% endif %}
-            {% if film.created_by %}
+
             <div class="mt-2">
-              <small class="text-secondary">Added by {{ film.created_by.username }}</small>
+              {% if film.anonymous %}
+              <small class="text-secondary">Added by: Anonymous</small>
+              {% elif film.created_by %}
+              <small class="text-secondary">
+                Added by
+                <a href="{% url 'user_profile' film.created_by.username %}" class="text-warning">
+                  @{{ film.created_by.username }}
+                </a>
+              </small>
+              {% endif %}
             </div>
-            {% endif %}
+
+
             {% if film.description %}
             <p class="mt-2 truncate-2 text-secondary">{{ film.description|truncatewords:20 }}</p>
             {% endif %}

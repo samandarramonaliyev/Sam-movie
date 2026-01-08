@@ -73,12 +73,18 @@
           </div>
 
 
-          {% if film.created_by and not film.anonymous %}
-          <div class="mt-3 text-secondary">
-            Added by: {{ film.created_by.username }}
+          <div class="mt-2">
+            {% if film.anonymous %}
+            <small class="text-secondary">Added by: Anonymous</small>
+            {% elif film.created_by %}
+            <small class="text-secondary">
+              Added by
+              <a href="{% url 'user_profile' film.created_by.username %}" class="text-warning">
+                @{{ film.created_by.username }}
+              </a>
+            </small>
+            {% endif %}
           </div>
-          {% endif %}
-
 
 
           {% if film.description %}
